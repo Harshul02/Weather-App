@@ -41,7 +41,7 @@ class _LocationScreenState extends State<LocationScreen> {
      var condition = weatherData['weather'][0]['id'];
      weatherIcon=weather.getWeatherIcon(condition);
      weatherMessage = weather.getMessage(temperature);
-     cityName = weatherData['Name'].toString(); //Er
+     cityName = weatherData['name'];
     });
   }
 
@@ -77,10 +77,14 @@ class _LocationScreenState extends State<LocationScreen> {
                     ),
                   ),
                   TextButton(
-                    onPressed: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context){
+                    onPressed: () async {
+                      var typedName = await Navigator.push(context, MaterialPageRoute(builder: (context){
                         return CityScreen();
                       }));
+                      if(typedName != null) {
+                        var weatherData = await weather.getCityWeather(typedName);
+                        updateUI(weatherData);
+                      }
                     },
                     child: Icon(
                       Icons.location_city,
@@ -107,7 +111,7 @@ class _LocationScreenState extends State<LocationScreen> {
               Padding(
                 padding: EdgeInsets.only(right: 15.0),
                 child: Text(
-                  '$weatherMessage in $cityName!', //Er
+                  '$weatherMessage in $cityName!',
                   textAlign: TextAlign.right,
                   style: kMessageTextStyle,
                 ),
